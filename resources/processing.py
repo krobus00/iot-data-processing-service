@@ -14,6 +14,8 @@ class Processing(Resource):
 
         tmp = df.resample('1min').mean().interpolate()
         resampled = tmp.resample('1H').ffill()
+        resampled.reset_index(inplace=True)
+        resampled['createdAt'] = resampled['createdAt'].astype(str)
         resampled = resampled.iloc[1:, :]
 
         return json.loads(resampled.to_json(orient='records'))
