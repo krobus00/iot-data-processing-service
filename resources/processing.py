@@ -2,6 +2,7 @@ import json
 from flask import request
 from flask_restful import Resource
 import pandas as pd
+import gc
 
 
 class Processing(Resource):
@@ -18,4 +19,7 @@ class Processing(Resource):
         resampled['createdAt'] = resampled['createdAt'].astype(str)
         resampled = resampled.iloc[1:, :]
 
-        return json.loads(resampled.to_json(orient='records'))
+        resp = json.loads(resampled.to_json(orient='records'))
+        del [[df, tmp, resampled]]
+        gc.collect()
+        return resp
