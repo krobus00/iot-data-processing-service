@@ -22,4 +22,4 @@ api.add_resource(Processing, "/data/iot", methods=["POST"])
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5005)
+    app.run(debug=True, port=5005, host="0.0.0.0")
