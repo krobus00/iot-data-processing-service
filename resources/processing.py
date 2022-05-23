@@ -10,14 +10,17 @@ class Processing(Resource):
         req = request.get_json(silent=True)
         df = pd.json_normalize(req, record_path=['items'])
 
-        df[["createdAt"]] = df[["createdAt"]].apply(pd.to_datetime)
+        df['createdAt'] = pd.to_datetime(df['createdAt'], unit='s')
         df.set_index('createdAt', inplace=True)
 
         tmp = df.resample('1min').mean().interpolate()
         resampled = tmp.resample('1H').ffill()
         resampled.reset_index(inplace=True)
-        resampled['createdAt'] = resampled['createdAt'].astype(str)
+        resampled['createdAt'] = resampled['createdAt'].astype(int) / 10**9
+        resampled['createdAt'] = resampled['createdAt'].astype(int)
         resampled = resampled.iloc[1:, :]
+
+        print(resampled)
 
         resp = json.loads(resampled.to_json(orient='records'))
         del [[df, tmp, resampled]]

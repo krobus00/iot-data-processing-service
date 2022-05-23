@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Resource, Api
 from flask_cors import CORS
-
+from resources.forecast import Forecast
 from resources.processing import Processing
 
 
@@ -18,7 +18,8 @@ class HealthCheck(Resource):
 
 
 api.add_resource(HealthCheck, "/health", methods=["GET"])
-api.add_resource(Processing, "/data/iot", methods=["POST"])
+api.add_resource(Processing, "/data/preprocessing", methods=["POST"])
+api.add_resource(Forecast, "/data/forecast", methods=["POST"])
 
 
 if __name__ == "__main__":
