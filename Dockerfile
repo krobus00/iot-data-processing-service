@@ -1,20 +1,22 @@
-FROM python:3.8-alpine
+FROM python:3.9-slim
 
-RUN apk add --no-cache --update \
-    python3 python3-dev gcc \
-    gfortran musl-dev g++ \
-    libffi-dev openssl-dev \
-    libxml2 libxml2-dev \
-    libxslt libxslt-dev \
-    libjpeg-turbo-dev zlib-dev
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=120 \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
 
-COPY ./requirements.txt /app/requirements.txt
+# we probably need build tools?
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends \
+    build-essential
 
 WORKDIR /app
+COPY . .
 
-RUN pip install -r requirements.txt
-
-COPY . /app
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 EXPOSE 5005
 
